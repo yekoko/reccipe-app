@@ -30,7 +30,7 @@ export default {
   methods: {
     onLogout() {
       this.$store.dispatch('data/logout');
-      this.$router.push('/admin')
+      this.$router.push('/admin/auth')
     }
   }
 }

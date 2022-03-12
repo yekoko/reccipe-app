@@ -43,5 +43,8 @@ export default {
   },
   env: {
     fbAPIKey: 'AIzaSyA7NQv74nDrloKBTOGrssclH1lpLGrlVeY'
+  },
+  router: {
+    middleware: 'check-auth'
   }
 }
