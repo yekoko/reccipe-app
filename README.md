@@ -1,4 +1,4 @@
-# sample-blog
+# recipe-app
 
 ## Build Setup
 
