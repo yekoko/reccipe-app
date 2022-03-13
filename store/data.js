@@ -22,6 +22,7 @@ export const mutations = {
   },
   addPost(state, post) {
     state.loadedPosts.push(post)
+    state.recipe.metadata.ingredients = []
   },
   editPost(state, editPost) {
     const postIndex = state.loadedPosts.findIndex(
