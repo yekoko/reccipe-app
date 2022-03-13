@@ -24,17 +24,21 @@ export default {
       context.store.dispatch('data/addIngrediantInRecipe',ing.ingredient);
     });
     return {
-      loadedPost: docData.data()
+      loadedPost: { ...docData.data(), id: context.route.params.postId }
     }
   },
   methods: {
-    async onSubmitted(postData) {
-      try {
-        await updateDoc(doc(db, "postCollection", this.$route.params.postId), { ...postData, updatedDate: Timestamp.fromDate(new Date()) });
+    onSubmitted(postData) {
+      // try {
+      //   await updateDoc(doc(db, "postCollection", this.$route.params.postId), { ...postData, updatedDate: Timestamp.fromDate(new Date()) });
+      //   this.$router.push('/admin')
+      // } catch(e) {
+      //   console.error(e)
+      // }
+
+      this.$store.dispatch('data/editPost', postData).then(() => {
         this.$router.push('/admin')
-      } catch(e) {
-        console.error(e)
-      }
+      })
     }
   }
 }

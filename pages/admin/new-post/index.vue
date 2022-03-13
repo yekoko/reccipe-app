@@ -19,13 +19,17 @@ export default {
     AdminPostForm
   },
   methods: {
-    async onSubmitted(postData) {
-      try {
-        await addDoc(collection(db, "postCollection"), { ...postData, updatedDate: Timestamp.fromDate(new Date()) });
+     onSubmitted(postData) {
+      // try {
+      //   await addDoc(collection(db, "postCollection"), { ...postData, updatedDate: Timestamp.fromDate(new Date()) });
+      //   this.$router.push('/admin')
+      // } catch(e) {
+      //   console.error(e)
+      // }
+
+      this.$store.dispatch('data/addPost', postData).then(() => {
         this.$router.push('/admin')
-      } catch(e) {
-        console.error(e)
-      }
+      })
     }
   }
 }

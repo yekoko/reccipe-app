@@ -1,4 +1,6 @@
 import Cookie from 'js-cookie'
+import {db} from '@/plugins/firebase.js'
+import { doc, setDoc, getDoc, addDoc, collection, Timestamp, updateDoc, deleteDoc } from 'firebase/firestore'
 
 export const state = () => ({
   loadedPosts: [],
@@ -17,6 +19,25 @@ export const state = () => ({
 export const mutations = {
   setPosts(state, posts) {
     state.loadedPosts = posts;
+  },
+  addPost(state, post) {
+    state.loadedPosts.push(post)
+  },
+  editPost(state, editPost) {
+    const postIndex = state.loadedPosts.findIndex(
+      post => post.id === editPost.id
+    );
+    state.loadedPosts[postIndex] = editPost
+    state.recipe.metadata.ingredients = []
+  },
+  deletePost(state, deletedPost) {
+    const postIndex = state.loadedPosts.findIndex(
+      post => post.id === deletedPost.id
+    );
+    state.loadedPosts.splice(postIndex, 1)
+  },
+  clearIngredents(state, payload) {
+    state.recipe.metadata.ingredients = []
   },
   ADD_INGREDIANT_RECIPE(state, payload) {
     state.recipe.metadata.ingredients.push({
@@ -37,6 +58,36 @@ export const mutations = {
 export const actions = {
   setPosts(vuexContext, posts) {
     vuexContext.commit('setPosts', posts);
+  },
+  async addPost(context, postData) {
+    const createdPost = { ...postData, updatedDate: Timestamp.fromDate(new Date()) }
+    try {
+      const respData = await addDoc(collection(db, "postCollection"), createdPost);
+      context.commit('addPost', { ...createdPost, id: respData.id })
+      
+    } catch(e) {
+      console.error(e)
+    }
+  },
+  async editPost(context, editPost) {
+    try {
+      await updateDoc(doc(db, "postCollection", editPost.id), { ...editPost, updatedDate: Timestamp.fromDate(new Date()) });
+      context.commit('editPost', editPost)
+    } catch(e) {
+      console.error(e)
+    }
+  },
+  async deletePost(context, deletePost) {
+    try {
+      const deleteData = await deleteDoc(doc(db, "postCollection", deletePost))
+      
+      context.commit('deletePost', deletePost)
+    } catch(e) {
+      console.error(e)
+    }
+  },
+  clearIngredents(context, payload) {
+    context.commit('clearIngredents', payload)
   },
   addIngrediantInRecipe(context,payload){
     context.commit('ADD_INGREDIANT_RECIPE',payload);

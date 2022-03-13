@@ -76,7 +76,9 @@ export default {
       this.$emit('submit', saveData);
     },
     onCancel() {
-      this.$router.push('/admin')
+      this.$store.dispatch('data/clearIngredents', {}).then(() => {
+        this.$router.push('/admin')
+      })
     },
     addIngrediant() {
       this.editedPost.ingredient = ""

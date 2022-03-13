@@ -1,28 +1,31 @@
 <template>
-  <nuxt-link :to="postLink" class="post-preview">
+  <div class="post-preview">
     <article>
       <div 
         class="post-thumbnail" 
         :style="{backgroundImage: 'url(' + thumbnail + ')'}" />
       <div class="post-content">
         <h1>{{ recipeName }}</h1>
-        <p class="description">{{ description }}</p>
-        <!-- <ul>
-          <li v-for="(item,index) in ingredients" :key="index" style="color: red;">
+        <!-- <p class="description">{{ description }}</p> -->
+         
+          <span class="ingredient-list" v-for="(item,index) in ingredients" :key="index">
             {{item.ingredient}}
-          </li>
-        </ul> -->
+          </span>
+        
       </div>
-      <!-- <div>
-        <AppButton type="button">Edit</AppButton>
-        <AppButton type="button">Delete</AppButton>
-      </div> -->
+      <div style="float: right; margin: 10px;">
+        <AppButton @click="$router.push('/posts/'+ id)" type="button" >View</AppButton>
+        <AppButton v-if="isAdmin" @click="$router.push('/admin/'+ id)" type="button" style="background-color: #198754">Edit</AppButton>
+        <AppButton v-if="isAdmin" @click="onDelete(id)" type="button" style="background-color: #dc3545">Delete</AppButton>
+      </div>
     </article>
-  </nuxt-link>
+  </div>
 </template>
 
 <script>
 import AppButton from '@/components/UI/AppButton'
+import {db} from '@/plugins/firebase.js'
+import { deleteDoc, doc } from 'firebase/firestore'
 
 export default {
   components: {
@@ -59,6 +62,20 @@ export default {
     postLink() {
       // this.$store.dispatch('data/setEditForm', true);
       return this.isAdmin ? '/admin/' + this.id : '/posts/' + this.id
+    }
+  },
+  methods: {
+    onDelete(id) {
+      // try {
+      //   //await deleteDoc(doc(db, "postCollection", id))
+      //   this.$router.push('/admin')
+      // } catch(e) {
+      //   console.error(e)
+      // }
+
+      this.$store.dispatch('data/deletePost', id).then(() => {
+        this.$router.push('/admin')
+      })
     }
   }
 }
@@ -108,5 +125,17 @@ a {
 a:hover .post-content,
 a:active .post-content {
   background-color: #ccc;
+}
+
+.ingredient-list {
+  color: #fff;
+  border: 1px solid #dc3545;
+  border-radius: 5px;
+  padding: 5px;
+  background: #dc3545;
+  margin: 5px;
+  font-weight: 400;
+  line-height: 2.3;
+  text-align: center;
 }
 </style>

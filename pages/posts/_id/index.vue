@@ -1,5 +1,8 @@
 <template>
   <div class="single-post-page">
+    <section style="float: left;">
+      <AppButton @click="$router.push('/posts')" type="button" style="background-color: #ffc107">Back</AppButton>
+    </section>
     <section class="post">
       <div class="post-thumbnail">
         <img :src="loadedPosts.thumbnail" alt="" class="recipe-thumbnail">
@@ -29,8 +32,12 @@
 <script>
 import {db} from '@/plugins/firebase.js'
 import { collection, doc, getDoc } from 'firebase/firestore'
+import AppButton from '@/components/UI/AppButton'
 
 export default {
+  components: {
+    AppButton
+  },
   async asyncData(context) {
     const docRef = doc(db, "postCollection", context.route.params.id);
     const docSnap = await getDoc(docRef);
